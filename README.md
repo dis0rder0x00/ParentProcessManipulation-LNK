@@ -25,6 +25,10 @@ Here's an overview of the process:
 The provided PoC is split into two stages. Stage one is the actual parent process manipulation, while stage two is just a simple message box to show that the technique works:
 
 
+## Showcase
+
+https://github.com/user-attachments/assets/5cad077a-1a8f-4bf9-9a36-1e6ad5b8c9fc
+
 
 ## Note
 This code is intended for proof-of-concept or controlled environments only.
