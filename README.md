@@ -9,6 +9,12 @@ Then this PoC might be somewhat interesting to you!
 This project demonstrates a method to start processes under a different parent process (`explorer.exe` in this case) by leveraging keyboard shortcuts of `.LNK` files and user input simulation.
 Although this technique may briefly expose its activities to the user (as the screen flashes for a split second due to switching windows), it offers an alternative to more conventional methods.
 
+
+## Showcase
+
+https://github.com/user-attachments/assets/5cad077a-1a8f-4bf9-9a36-1e6ad5b8c9fc
+
+
 ## How It Works
 The method involves creating a custom .lnk (shortcut) file that triggers the desired process when a specific hotkey combination (like `[Ctrl]` + `[Shift]` + `B`) is pressed.
 This shortcut is registered in the Windows Start Menu and is assigned a hotkey combination.
@@ -22,13 +28,7 @@ Here's an overview of the process:
 3. Switch focused window to task bar, to mitigate the capture of the keyboard input by third-party applications. 
 4. Simulate Keystrokes: The script uses the `SendInput` function to simulate pressing the hotkey combination, effectively launching the desired process.
 
-The provided PoC is split into two stages. Stage one is the actual parent process manipulation, while stage two is just a simple message box to show that the technique works:
-
-
-## Showcase
-
-https://github.com/user-attachments/assets/5cad077a-1a8f-4bf9-9a36-1e6ad5b8c9fc
-
+The provided PoC is split into two stages. Stage one is the actual parent process manipulation, while stage two is just a simple message box to show that the technique works.
 
 ## Note
 This code is intended for proof-of-concept or controlled environments only.
