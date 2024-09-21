@@ -43,7 +43,7 @@ Custom Process: The script currently creates a shortcut that executes itself aga
 You can modify the SetPath and SetArguments sections to specify any other executable or command.
 
 ## Limitations
-- Not Fully OPSEC safe: The technique requires you to drop an LNK file on disk which might not be the best idea for your use case.
+- Not Fully OPSEC safe: The technique requires you to drop an LNK file on disk which might not be the best idea for your use case. To improve your OPSEC using this technique, youd probably want to start a LOLBIN using the shortcut instead of a dropped binary (which this PoC does atm). This should not be hard to modify by yourself.
 - May Not Work on All Versions: This technique depends on specific behaviors of the Windows shell, which may change between versions or updates.
 
 ## Future Improvements
